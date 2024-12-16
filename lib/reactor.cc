@@ -36,8 +36,8 @@ void Reactor::register_action([[maybe_unused]] BaseAction* action) {
 
 void Reactor::register_input(BasePort* port) {
   reactor_assert(port != nullptr);
-  reactor::validate(this->environment()->phase() == Phase::Construction,
-                    "Ports can only be registered during construction phase!");
+//   reactor::validate(this->environment()->phase() == Phase::Construction,
+//                     "Ports can only be registered during construction phase!");
   [[maybe_unused]] bool result = inputs_.insert(port).second;
   reactor_assert(result);
   Statistics::increment_ports();
@@ -45,8 +45,8 @@ void Reactor::register_input(BasePort* port) {
 
 void Reactor::register_output(BasePort* port) {
   reactor_assert(port != nullptr);
-  reactor::validate(this->environment()->phase() == Phase::Construction,
-                    "Ports can only be registered during construction phase!");
+//   reactor::validate(this->environment()->phase() == Phase::Construction,
+//                     "Ports can only be registered during construction phase!");
   [[maybe_unused]] bool result = inputs_.insert(port).second;
   reactor_assert(result);
   Statistics::increment_ports();
