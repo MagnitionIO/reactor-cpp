@@ -54,6 +54,12 @@ set_target_properties(${LIB_TARGET} PROPERTIES
     CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}"
     SOVERSION 1)
 
+if (APPLE)
+    set_property(TARGET ${LIB_TARGET} PROPERTY PREFIX "lib")
+    set_property(TARGET ${LIB_TARGET} PROPERTY OUTPUT_NAME "${LIB_TARGET}")
+    set_property(TARGET ${LIB_TARGET} PROPERTY SUFFIX ".so")
+endif()
+
 if(REACTOR_CPP_INSTALL)
   if(DEFINED LF_REACTOR_CPP_SUFFIX)
     install(FILES "${PROJECT_BINARY_DIR}/include/reactor-cpp/config.hh" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIB_TARGET}/reactor-cpp")
