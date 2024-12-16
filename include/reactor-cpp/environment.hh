@@ -103,6 +103,7 @@ public:
   }
 
   void optimize();
+  const Graph<BasePort*, ConnectionProperties> getGraph () { return optimized_graph_; }
 
   void register_reactor(Reactor* reactor);
   void register_port(BasePort* port) noexcept;
