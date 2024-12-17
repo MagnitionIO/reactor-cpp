@@ -36,6 +36,14 @@ auto Tag::delay(Duration offset) const noexcept -> Tag {
   return {this->time_point_ + offset, 0};
 }
 
+auto Tag::delayed(Duration offset) const noexcept -> Tag {
+  if (offset == Duration::zero()) {
+    validate(this->micro_step_ != std::numeric_limits<mstep_t>::max(), "Microstep overflow detected!");
+    return {this->time_point_, (unsigned long)(~0)};
+  }
+  return {this->time_point_ + offset, 0};
+}
+
 auto Tag::subtract(Duration offset) const noexcept -> Tag {
   if (offset == Duration::zero()) {
     return decrement();
