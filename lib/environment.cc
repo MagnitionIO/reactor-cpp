@@ -112,6 +112,8 @@ void Environment::assemble() { // NOLINT(readability-function-cognitive-complexi
           source_port->add_outward_binding(destination_port);
           log::Debug() << "from: " << source_port->fqn() << "(" << source_port << ")"
                        << " --> to: " << destination_port->fqn() << "(" << destination_port << ")";
+          reactor::validate(source_port != destination_port,
+                            "Self wiring detected; from " + source_port->fqn() + " --> " + destination_port->fqn());
         }
       } else {
         if (properties.type_ == ConnectionType::Enclaved || properties.type_ == ConnectionType::PhysicalEnclaved ||
