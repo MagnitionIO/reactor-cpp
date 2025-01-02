@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-if (DEFINED LF_REACTOR_CPP_SUFFIX)
-  # the build is triggered from Lingua Franca
-  set(LIB_TARGET "reactor-cpp-${LF_REACTOR_CPP_SUFFIX}")
-else()
-  set(LIB_TARGET "reactor-cpp")
-endif()
+set(LIB_TARGET "reactor-cpp")
 
 project(${LIB_TARGET} LANGUAGES CXX VERSION 0.0.1)
 
@@ -60,14 +55,15 @@ endif()
 configure_file(include/reactor-cpp/config.hh.in include/reactor-cpp/config.hh @ONLY)
 
 include(GNUInstallDirs)
+message("CMAKE_INSTALL_INCLUDEDIR: ${CMAKE_INSTALL_INCLUDEDIR}")
 
 add_subdirectory(lib)
-if(NOT DEFINED LF_REACTOR_CPP_SUFFIX)
-  add_subdirectory(examples)
-endif()
+# if(NOT DEFINED LF_REACTOR_CPP_SUFFIX)
+#   add_subdirectory(examples)
+# endif()
 
-if (DEFINED LF_REACTOR_CPP_SUFFIX)
-  install(DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIB_TARGET}")
+if (DEFINED ReactorSDK)
+    install(DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${ReactorSDK}")
 else()
-  install(DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+    install(DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 endif()

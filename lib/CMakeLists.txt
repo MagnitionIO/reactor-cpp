@@ -16,8 +16,8 @@ if(REACTOR_CPP_TRACE)
   set(SOURCE_FILES ${SOURCE_FILES} trace.cc )
 endif()
 
-if (DEFINED LF_REACTOR_CPP_SUFFIX)
-  set(REACTOR_CPP_INCLUDE "include/${LIB_TARGET}")
+if (DEFINED ReactorSDK)
+  set(REACTOR_CPP_INCLUDE "include/${ReactorSDK}")
 else()
   set(REACTOR_CPP_INCLUDE "include")
 endif()
@@ -61,18 +61,27 @@ if (APPLE)
 endif()
 
 if(REACTOR_CPP_INSTALL)
-  if(DEFINED LF_REACTOR_CPP_SUFFIX)
-    install(FILES "${PROJECT_BINARY_DIR}/include/reactor-cpp/config.hh" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIB_TARGET}/reactor-cpp")
-  else()
-    install(FILES "${PROJECT_BINARY_DIR}/include/reactor-cpp/config.hh" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/reactor-cpp")
-  endif()
+  if(DEFINED ReactorSDK)
+    install(FILES "${PROJECT_BINARY_DIR}/include/reactor-cpp/config.hh" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${ReactorSDK}/reactor-cpp")
 
-  install(TARGETS ${LIB_TARGET} EXPORT ${LIB_TARGET}Config
+    install(TARGETS ${LIB_TARGET} EXPORT ${LIB_TARGET}Config
       ARCHIVE  DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
       LIBRARY  DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
       RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}" OPTIONAL)
 
-  install(EXPORT ${LIB_TARGET}Config DESTINATION share/${LIB_TARGET}/cmake)
+    install(EXPORT ${LIB_TARGET}Config DESTINATION share/${ReactorSDK}/${LIB_TARGET}/cmake)
 
-  export(TARGETS ${PROJECT_NAME} FILE ${LIB_TARGET}Config.cmake)
+    export(TARGETS ${PROJECT_NAME} FILE ${ReactorSDK}/${LIB_TARGET}Config.cmake)
+  else()
+    install(FILES "${PROJECT_BINARY_DIR}/include/reactor-cpp/config.hh" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/reactor-cpp")
+
+    install(TARGETS ${LIB_TARGET} EXPORT ${LIB_TARGET}Config
+      ARCHIVE  DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
+      LIBRARY  DESTINATION "${CMAKE_INSTALL_LIBDIR}" OPTIONAL
+      RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}" OPTIONAL)
+
+    install(EXPORT ${LIB_TARGET}Config DESTINATION share/${LIB_TARGET}/cmake)
+
+    export(TARGETS ${PROJECT_NAME} FILE ${LIB_TARGET}Config.cmake)
+  endif()
 endif()
