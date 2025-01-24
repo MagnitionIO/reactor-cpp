@@ -67,6 +67,26 @@ void Environment::optimize() {
   optimized_graph_ = graph_;
 }
 
+void recursive_construct(Reactor* container) {
+  container->construct();
+  for (auto* reactor : container->reactors()) {
+    recursive_construct(reactor);
+  }
+}
+
+void Environment::construct() {
+    phase_ = Phase::Assembly;
+
+    log::Debug() << "start assembly of reactors";
+    for (auto* reactor : top_level_reactors_) {
+        recursive_construct(reactor);
+    }
+
+    for (auto* env : contained_environments_) {
+        env->construct();
+    }
+}
+
 void recursive_assemble(Reactor* container) {
   container->assemble();
   for (auto* reactor : container->reactors()) {

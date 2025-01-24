@@ -108,6 +108,7 @@ public:
   void register_reactor(Reactor* reactor);
   void register_port(BasePort* port) noexcept;
   void register_input_action(BaseAction* action);
+  void construct();
   void assemble();
   auto startup() -> std::thread;
   void sync_shutdown();
