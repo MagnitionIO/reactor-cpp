@@ -2222,10 +2222,11 @@ public:
     }
 
     template <typename Fn>
-    void function(Fn func)
+    MagnitionReaction<Fn, InputTuple, OutputTuple> &function(Fn func)
     {
         auto MagnitionReactionRef = std::make_shared<MagnitionReaction<Fn, InputTuple, OutputTuple>> (name, reactor, std::move(input_triggers), std::move(output_triggers), std::forward<Fn>(func));
         MagnitionReactionRef->execute();
+        return *MagnitionReactionRef;
     }
 };
 
@@ -2820,6 +2821,28 @@ public:
         set_input_triggers(reaction, input_triggers);
         set_output_triggers(reaction, output_triggers);
         
+    }
+
+    template <typename Dfn>
+    void deadline(reactor::Duration deadline_period, Dfn fn)
+    {
+        reactor->validate_reaction (fn, input_triggers, output_triggers);
+
+        auto deadline_func = [func = std::move(fn), this]()
+        {
+            (void)this;
+            auto apply_to_dereferenced = [](auto&& func, auto&& tuple) {
+                return std::apply(
+                    [&](auto*... ptrs) {
+                        return std::invoke(std::forward<decltype(func)>(func), (*ptrs)...);
+                    },
+                    std::forward<decltype(tuple)>(tuple));
+            };
+
+            apply_to_dereferenced(func, std::tuple_cat(this->input_triggers, this->output_triggers));
+        };
+
+        reaction->set_deadline(deadline_period, deadline_func);
     }
 };
 
