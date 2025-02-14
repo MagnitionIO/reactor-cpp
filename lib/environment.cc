@@ -243,6 +243,8 @@ void Environment::export_dependency_graph(const std::string& path) {
   std::ofstream dot;
   dot.open(path);
 
+  dependency_graph_and_indexes();
+
   // sort all reactions_ by their index
   std::map<unsigned int, std::vector<Reaction*>> reactions_by_index;
   for (auto* reaction : reactions_) {
@@ -339,15 +341,33 @@ auto Environment::startup() -> std::thread {
   return startup(get_physical_time());
 }
 
-auto Environment::startup(const TimePoint& start_time) -> std::thread {
+void Environment::dependency_graph_and_indexes() {
   validate(this->phase() == Phase::Assembly, "startup() may only be called during assembly phase!");
 
   log::Debug() << "Building the Dependency-Graph";
   for (auto* reactor : top_level_reactors_) {
     build_dependency_graph(reactor);
   }
-
   calculate_indexes();
+
+  phase_ = Phase::Indexing;
+}
+
+auto Environment::startup(const TimePoint& start_time) -> std::thread {
+//   validate(this->phase() == Phase::Assembly, "startup() may only be called during assembly phase!");
+
+//   log::Debug() << "Building the Dependency-Graph";
+//   for (auto* reactor : top_level_reactors_) {
+//     build_dependency_graph(reactor);
+//   }
+
+//   calculate_indexes();
+
+  if (phase_ == Phase::Assembly) {
+    dependency_graph_and_indexes();
+  }
+
+  validate(this->phase() == Phase::Indexing, "startup() may only be called during Indexing phase!");
 
   log_.debug() << "Starting the execution";
   phase_ = Phase::Startup;

@@ -4,8 +4,6 @@
 
 using namespace std;
 
-std::unique_ptr<MagnitionSimulator> MagnitionSimulator::instance = nullptr;
-
 std::map<std::string, std::string> type_convert = {
     {"i", "int"},
     {"j", "uint32_t"},
@@ -67,39 +65,6 @@ MagnitionSimulator::MagnitionSimulator( SystemParameterBase *sys_param, unsigned
 
 }
 
-MagnitionSimulator* MagnitionSimulator::create_simulator_instance   (SystemParameterBase *sys_param, unsigned int num_workers, bool fast_fwd_execution,
-                                                                    const reactor::Duration& timeout, bool visualize, string config_file) {
-    if (!instance) {
-        instance = std::unique_ptr<MagnitionSimulator>(new MagnitionSimulator(sys_param, num_workers, fast_fwd_execution, timeout, visualize));
-
-        // if (config_file != "") {
-        //     std::cout << "LOADING CONFIG_FILE:" << config_file << std::endl;
-        //     std::ifstream file(config_file);
-        //     if (!file) {
-        //         std::cerr << "Failed to open config.yaml" << std::endl;
-        //     } else {
-        //         instance->root = YAML::Load(file);
-        //         // YAML::Node config = YAML::Load(file);
-        //         flattenYaml(instance->root, "", instance->magnition_config);
-        //         // instance->magnition_config.display();
-        //         std::cout << "Flattened YAML Map:" << std::endl;
-        //         for (const auto& kv : instance->magnition_config) {
-        //             std::cout << kv.first << ": " << kv.second << std::endl;
-        //         }
-        //     }
-        // }
-    }
-    return instance.get();
-}
-
-MagnitionSimulator* MagnitionSimulator::get_simulator_instance()
-{
-    if (!instance) {
-        return nullptr;
-    }
-    return instance.get();
-}
-
 // void MagnitionSimulator::recurse_params_json (MagnitionParameterBase *param, std::ostringstream &oss) {
 //     // bool first = true;
 //     for (auto* child : param->child_params) {
@@ -157,12 +122,12 @@ MagnitionSimulator* MagnitionSimulator::get_simulator_instance()
 
 void MagnitionSimulator::run()
 {
-    if (instance->system_parameters) {
-        instance->system_parameters->pull_config();
+    if (this->system_parameters) {
+        this->system_parameters->pull_config();
         // instance->system_parameters->display();
     }
 
-    instance->construct();
+    this->construct();
     // cout << "========== PRE ASSEMBLE ==========\n";
     // for (auto *reactor_itr : top_tier_reactors) {
     //     std::cout << "Parent Reactor:" << reactor_itr->fqn() << " address:" << (void*)reactor_itr << "\n";
@@ -193,7 +158,7 @@ void MagnitionSimulator::run()
     //     print_child_parameters (reactor_itr);
     // }
 
-    instance->assemble();
+    this->assemble();
     // cout << "========== POST ASSEMBLE ==========\n";
     // for (auto *reactor_itr : top_tier_reactors) {
     //     std::cout << "Parent Reactor:" << reactor_itr->fqn() << "\n";
@@ -224,32 +189,34 @@ void MagnitionSimulator::run()
     //     print_child_parameters (reactor_itr);
     // }
 
-    if (instance->system_parameters) {
-        if (instance->system_parameters->validate() != 0) {
+    if (this->system_parameters) {
+        if (this->system_parameters->validate() != 0) {
             cout << "INVALID CONFIGURATION!\n";
             return;
         }
     }
 
     if (visualize) {
-        auto graph = this->getGraph();
-        auto edges = graph.get_edges();
-        std::unordered_map<std::string, std::vector<std::string>> graph_map{};
-        for (auto const& [source, sinks] : edges) {
 
-        auto* source_port = source.first;
-        auto properties = source.second;
+        this->export_dependency_graph("graph.dot");
+        // auto graph = this->getGraph();
+        // auto edges = graph.get_edges();
+        // std::unordered_map<std::string, std::vector<std::string>> graph_map{};
+        // for (auto const& [source, sinks] : edges) {
 
-        if (properties.type_ == reactor::ConnectionType::Normal) {
-            for (auto* const destination_port : sinks) {
-            std::cout << "from: " << source_port->fqn() << "(" << source_port << ")"
-                        << " --> to: " << destination_port->fqn() << "(" << destination_port << ")" << std::endl;
-            graph_map.try_emplace (source_port->fqn(), std::vector<std::string>{});
-            graph_map[source_port->fqn()].push_back (destination_port->fqn());
-            }
-        }
-        }
-        generateDotFile (graph_map);
+        // auto* source_port = source.first;
+        // auto properties = source.second;
+
+        // if (properties.type_ == reactor::ConnectionType::Normal) {
+        //     for (auto* const destination_port : sinks) {
+        //     std::cout << "from: " << source_port->fqn() << "(" << source_port << ")"
+        //                 << " --> to: " << destination_port->fqn() << "(" << destination_port << ")" << std::endl;
+        //     graph_map.try_emplace (source_port->fqn(), std::vector<std::string>{});
+        //     graph_map[source_port->fqn()].push_back (destination_port->fqn());
+        //     }
+        // }
+        // }
+        // generateDotFile (graph_map);
 
         // std::ostringstream json_config;
         // bool first = true;
@@ -292,6 +259,6 @@ void MagnitionSimulator::run()
 
         return;
     }
-    auto thread = instance->startup();
+    auto thread = this->startup();
     thread.join();
 }

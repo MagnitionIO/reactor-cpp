@@ -2433,32 +2433,13 @@ public:
     SystemParameterBase *system_parameters;
 private:
     bool visualize = false;
-    std::set<MagnitionReactor*> top_tier_reactors;
-    // std::set<MagnitionParameterBase*> top_tier_params;
-    static std::unique_ptr<MagnitionSimulator> instance;
-    MagnitionSimulator(SystemParameterBase *sys_param, unsigned int num_workers = 1, bool fast_fwd_execution = true,
-                       const reactor::Duration& timeout = reactor::Duration::max(), bool visualize = false);
-    void print_child_parameters (MagnitionReactor *reactor);
 public:
-    // YAML::Node root;
-    static MagnitionSimulator *create_simulator_instance(SystemParameterBase *sys_param = nullptr, unsigned int num_workers = 1, bool fast_fwd_execution = true,
-                       const reactor::Duration& timeout = reactor::Duration::max(), bool visualize = false, string config_file = "");
-    static MagnitionSimulator *get_simulator_instance();
+    MagnitionSimulator(SystemParameterBase *sys_param = nullptr, unsigned int num_workers = 1, bool fast_fwd_execution = true,
+                       const reactor::Duration& timeout = reactor::Duration::max(), bool visualize = false);
+
     MagnitionSimulator(const MagnitionSimulator&) = delete;
     MagnitionSimulator& operator=(const MagnitionSimulator&) = delete;
     void run();
-    void add_reactors (MagnitionReactor* reactor) {
-        [[maybe_unused]] bool result = top_tier_reactors.insert(reactor).second;
-        reactor_assert(result);
-    }
-    // void recurse_params_json (MagnitionParameterBase *param, std::ostringstream &oss);
-    // void recurse_params_yaml (MagnitionParameterBase *param, std::ostringstream &oss, std::string &&prefix);
-    // void add_params(MagnitionParameterBase *param) {
-    //     [[maybe_unused]] bool result = top_tier_params.insert(param).second;
-    //     reactor_assert(result);
-    // }
-
-    // std::unordered_map<std::string, std::string> magnition_config;
 };
 
 class MagnitionReactor : public reactor::Reactor
@@ -2505,7 +2486,6 @@ public:
 
     MagnitionReactor(const std::string &name, MagnitionSimulator *env)
         : reactor::Reactor(name, (reactor::Environment*)env), sim(env) {
-        env->add_reactors (this);
         // reactor::validate(p_param,
         //             "Reactor:" + name + " has passed null parameter");
     }
