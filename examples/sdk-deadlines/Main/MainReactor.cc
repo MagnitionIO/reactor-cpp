@@ -2,7 +2,7 @@
 
 void MainReactor::construction() {
 
-    cout << "Construction Main n_fast:" << parameters.n_fast.value << "\n";
+    std::cout << "Construction Main n_fast:" << parameters.n_fast.value << "\n";
 
     slow = std::make_unique<NodeReactor>("slow", this);
 
@@ -13,5 +13,5 @@ void MainReactor::construction() {
 }
 
 void MainReactor::assembling() {
-    cout << "Assembling Main n_sinks:" << parameters.n_fast.value << "\n";
+    std::cout << "Assembling Main n_sinks:" << parameters.n_fast.value << "\n";
 }

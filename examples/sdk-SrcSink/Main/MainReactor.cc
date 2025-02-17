@@ -22,7 +22,7 @@ void MainReactor::assembling() {
         inputs(&startup).
         outputs().
         function(
-            [&](startup_t& startup) {
+            [&](Startup& startup) {
                 cout << "(" << get_elapsed_logical_time() << ", " << get_microstep() << "), physical_time: " << get_elapsed_physical_time() << " " <<
                 "Starting up reaction\n" << "Bank:" << bank_index << " name:" << parameters.alias.value << " fqn:" << fqn() << " n_sinks:" << parameters.n_sinks.value << endl;
             }

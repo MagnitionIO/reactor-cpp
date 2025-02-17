@@ -2,10 +2,12 @@
 
 #include <reactor-sdk/magnition-reactor-cpp.hh>
 
-class NodeReactor: public MagnitionReactor {
+using namespace sdk;
+
+class NodeReactor: public Reactor {
 public:
-    struct Parameters : public MagnitionParameter<reactor::Duration> {
-        ParameterMetadata<reactor::Duration> period = ParameterMetadata<reactor::Duration> {
+    struct Parameters : public SystemParameter<Duration> {
+        ParameterMetadata<Duration> period = ParameterMetadata<Duration> {
             .name = "period",
             .description = "Schedule and deadline period",
             .min_value = 10ms,
@@ -13,7 +15,7 @@ public:
             .value = 500ms
         };
 
-        ParameterMetadata<reactor::Duration> duration = ParameterMetadata<reactor::Duration> {
+        ParameterMetadata<Duration> duration = ParameterMetadata<Duration> {
             .name = "duration",
             .description = "Sleep duration",
             .min_value = 5ms,
@@ -21,22 +23,21 @@ public:
             .value = 10ms
         };
 
-        Parameters(MagnitionReactor *container)
-            :   MagnitionParameter<reactor::Duration>(container) {
+        Parameters(Reactor *container)
+            :   SystemParameter<Duration>(container) {
             register_parameters (period, duration);
         }
   };
 
 private:
     Parameters parameters{this};
-
-    logical_action_t<void> a{"a", this};
+    LogicalAction<void> a{"a", this};
 
 public:
-    NodeReactor(const std::string &name, MagnitionSimulator *env)
-    : MagnitionReactor(name, env) {}
-    NodeReactor(const std::string &name, MagnitionReactor *container)
-    : MagnitionReactor(name, container) {}
+    NodeReactor(const std::string &name, Environment *env)
+    : Reactor(name, env) {}
+    NodeReactor(const std::string &name, Reactor *container)
+    : Reactor(name, container) {}
   
     void construction() override;
     void assembling() override;

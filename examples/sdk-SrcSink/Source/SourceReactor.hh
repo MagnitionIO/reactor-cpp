@@ -2,10 +2,11 @@
 
 #include <reactor-sdk/magnition-reactor-cpp.hh>
 using namespace std;
+using namespace sdk;
 
-class SourceReactor : public MagnitionReactor {
+class SourceReactor : public Reactor {
 public:
-    struct Parameters : public MagnitionParameter<int> {
+    struct Parameters : public SystemParameter<int> {
 
         ParameterMetadata<int> iterations = ParameterMetadata<int> {
             .name = "iterations",
@@ -23,8 +24,8 @@ public:
             .value = 1
         };
 
-        Parameters(MagnitionReactor *container)
-            :   MagnitionParameter<int>(container) {
+        Parameters(Reactor *container)
+            :   SystemParameter<int>(container) {
             register_parameters (iterations, n_ports);
         }
     };
@@ -35,14 +36,14 @@ private:
     int itr = 0;
     int rsp_itr = 0;
 public:                                                         
-    SourceReactor(const std::string &name, MagnitionSimulator *env)
-        : MagnitionReactor(name, env) {}
-    SourceReactor(const std::string &name, MagnitionReactor *container)
-        : MagnitionReactor(name, container) {}
+    SourceReactor(const std::string &name, Environment *env)
+        : Reactor(name, env) {}
+    SourceReactor(const std::string &name, Reactor *container)
+        : Reactor(name, container) {}
 
-    logical_action_t<int> sch{"sch", this};
-    multiport_input_t<int> rsp{"rsp", this};
-    multiport_output_t<int> req{"req", this};
+    LogicalAction<int> sch{"sch", this};
+    MultiportInput<int> rsp{"rsp", this};
+    MultiportOutput<int> req{"req", this};
 
     void construction() override;
     void assembling() override;

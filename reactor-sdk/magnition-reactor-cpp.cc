@@ -1,8 +1,12 @@
 #include <fstream>
 #include <unordered_map>
-#include "reactor-sdk/magnition-reactor-cpp.hh"
+#include <map>
+#include "reactor-sdk/Environment.hh"
 
 using namespace std;
+
+namespace sdk
+{
 
 std::map<std::string, std::string> type_convert = {
     {"i", "int"},
@@ -58,14 +62,14 @@ void generateDotFile(const std::unordered_map<std::string, std::vector<std::stri
     dotFile.close();
 }
 
-MagnitionSimulator::MagnitionSimulator( SystemParameterBase *sys_param, unsigned int num_workers, bool fast_fwd_execution,
+Environment::Environment( ConfigParameterBase *cfg_param, unsigned int num_workers, bool fast_fwd_execution,
                                         const reactor::Duration& timeout, bool visualize)
-    : reactor::Environment (num_workers, fast_fwd_execution, timeout), system_parameters(sys_param), visualize(visualize)
+    : reactor::Environment (num_workers, fast_fwd_execution, timeout), config_parameters(cfg_param), visualize(visualize)
 {
 
 }
 
-// void MagnitionSimulator::recurse_params_json (MagnitionParameterBase *param, std::ostringstream &oss) {
+// void Environment::recurse_params_json (MagnitionParameterBase *param, std::ostringstream &oss) {
 //     // bool first = true;
 //     for (auto* child : param->child_params) {
 //         // if (!first)
@@ -79,7 +83,7 @@ MagnitionSimulator::MagnitionSimulator( SystemParameterBase *sys_param, unsigned
 //     }
 // }
 
-// void MagnitionSimulator::recurse_params_yaml (MagnitionParameterBase *param, std::ostringstream &oss, std::string &&prefix) {
+// void Environment::recurse_params_yaml (MagnitionParameterBase *param, std::ostringstream &oss, std::string &&prefix) {
 //     for (auto* child : param->child_params) {
 //         oss << prefix << child->fqname << ":\n";
 //         std::string recurse_prefix = prefix + "  ";
@@ -89,7 +93,7 @@ MagnitionSimulator::MagnitionSimulator( SystemParameterBase *sys_param, unsigned
 //     }
 // }
 
-// void MagnitionSimulator::print_child_parameters (MagnitionReactor *reactor) {
+// void Environment::print_child_parameters (MagnitionReactor *reactor) {
 //     for (auto *reactor_itr : reactor->child_reactors) {
 //         std::cout << "Parent Reactor:" << reactor_itr->fqn() << " address:" << (void*)reactor_itr << "\n";
 //         for (auto *input_itr : reactor_itr->inputs_) {
@@ -120,11 +124,11 @@ MagnitionSimulator::MagnitionSimulator( SystemParameterBase *sys_param, unsigned
 //     }
 // }
 
-void MagnitionSimulator::run()
+void Environment::run()
 {
-    if (this->system_parameters) {
-        this->system_parameters->pull_config();
-        // instance->system_parameters->display();
+    if (this->config_parameters) {
+        this->config_parameters->pull_config();
+        // instance->config_parameters->display();
     }
 
     this->construct();
@@ -189,8 +193,8 @@ void MagnitionSimulator::run()
     //     print_child_parameters (reactor_itr);
     // }
 
-    if (this->system_parameters) {
-        if (this->system_parameters->validate() != 0) {
+    if (this->config_parameters) {
+        if (this->config_parameters->validate() != 0) {
             cout << "INVALID CONFIGURATION!\n";
             return;
         }
@@ -262,3 +266,5 @@ void MagnitionSimulator::run()
     auto thread = this->startup();
     thread.join();
 }
+
+} // namespace sdk

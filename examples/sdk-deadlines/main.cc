@@ -5,6 +5,7 @@
 #include "Main/MainReactor.hh"
 
 using namespace std;
+using namespace sdk;
 
 int main(int argc, char **argv) {
     unsigned workers = 1;
@@ -20,7 +21,7 @@ int main(int argc, char **argv) {
 
     std::cout << "parameters - workers:" << workers << " fast:" << (fast ? "True" : "False") << " timeout:" << timeout << " visualize:" << visualize << std::endl;
 
-    MagnitionSimulator sim {&system_parameters, workers, fast, timeout, visualize};
+    Environment sim {&cfg_parameters, workers, fast, timeout, visualize};
     auto main = new MainReactor("Main", &sim);
 
     sim.run();

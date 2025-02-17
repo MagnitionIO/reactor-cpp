@@ -5,9 +5,11 @@
 #include "Source/SourceReactor.hh"
 #include "Sink/SinkReactor.hh"
 
-class MainReactor: public MagnitionReactor {
+using namespace sdk;
+
+class MainReactor: public Reactor {
 public:
-    struct Parameters : public MagnitionParameter<string, int> {
+    struct Parameters : public SystemParameter<string, int> {
         ParameterMetadata<string> alias = ParameterMetadata<string> {
             .name = "alias",
             .description = "Alternate name",
@@ -32,8 +34,8 @@ public:
             .value = 1
         };
 
-        Parameters(MagnitionReactor *container)
-            :   MagnitionParameter<string, int>(container) {
+        Parameters(Reactor *container)
+            :   SystemParameter<string, int>(container) {
             register_parameters (alias, n_sinks, log_level);
         }
   };
@@ -45,10 +47,10 @@ private:
     ReactorBank<SinkReactor> snk;
 
 public:
-    MainReactor(const std::string &name, MagnitionSimulator *env)
-    : MagnitionReactor(name, env) {}
-    MainReactor(const std::string &name, MagnitionReactor *container)
-    : MagnitionReactor(name, container) {}
+    MainReactor(const std::string &name, Environment *env)
+    : Reactor(name, env) {}
+    MainReactor(const std::string &name, Reactor *container)
+    : Reactor(name, container) {}
   
     void construction() override;
     void assembling() override;

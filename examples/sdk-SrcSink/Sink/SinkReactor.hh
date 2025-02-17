@@ -2,10 +2,11 @@
 
 #include <reactor-sdk/magnition-reactor-cpp.hh>
 using namespace std;
+using namespace sdk;
 
-class SinkReactor : public MagnitionReactor {
+class SinkReactor : public Reactor {
 public:
-    struct Parameters : public MagnitionParameter<string> {
+    struct Parameters : public SystemParameter<string> {
         ParameterMetadata<string> name = ParameterMetadata<string> {
             .name = "Name",
             .description = "Alternate name",
@@ -14,25 +15,25 @@ public:
             .value = "Sink"
         };
 
-        Parameters(MagnitionReactor *container)
-            :   MagnitionParameter<string>(container) {
+        Parameters(Reactor *container)
+            :   SystemParameter<string>(container) {
             register_parameters (name);
         }
     };
 
-    SinkReactor(const std::string &name, MagnitionSimulator *env)
-        : MagnitionReactor(name, env) {}
-    SinkReactor(const std::string &name, MagnitionReactor *container)
-        : MagnitionReactor(name, container) {}
+    SinkReactor(const std::string &name, Environment *env)
+        : Reactor(name, env) {}
+    SinkReactor(const std::string &name, Reactor *container)
+        : Reactor(name, container) {}
 
     Parameters parameters{this};
 
-    input_t<int> req{"req", this};
-    output_t<int> rsp{"rsp", this};
+    Input<int> req{"req", this};
+    Output<int> rsp{"rsp", this};
     
     void construction() override;
     void assembling() override;
 
-    void startup_reaction (startup_t& startup);
-    void process_request (input_t<int>& req, output_t<int>& rsp);
+    void startup_reaction (Startup &startup);
+    void process_request (Input<int>& req, Output<int>& rsp);
 };

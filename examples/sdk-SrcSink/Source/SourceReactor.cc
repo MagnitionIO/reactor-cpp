@@ -16,7 +16,7 @@ void SourceReactor::assembling() {
         inputs(&startup).
         outputs(&sch).
         function(
-            [&](startup_t& startup, logical_action_t<int>& sched) {
+            [&](Startup& startup, LogicalAction<int>& sched) {
                 cout << "(" << get_elapsed_logical_time() << ", " << get_microstep() << "), physical_time: " << get_elapsed_physical_time() << " " <<
                 "Starting up reaction\n" << "Bank:" << bank_index << " name:" << name << " fqn:" << fqn() << " iterations:" << parameters.iterations.value << endl;
                 if (itr < parameters.iterations.value) {
@@ -30,7 +30,7 @@ void SourceReactor::assembling() {
         inputs(&sch).
         outputs(&req).
         function(
-            [&](logical_action_t<int>& sch, multiport_output_t<int>& req) {
+            [&](LogicalAction<int>& sch, MultiportOutput<int>& req) {
                 for (int i = 0; i < parameters.n_ports.value; ++i) {
                     cout << "(" << get_elapsed_logical_time() << ", " << get_microstep() << "), physical_time: " << get_elapsed_physical_time() << " " <<
                     "Scheduling iteration:" << *sch.get() << " out_port:" << i << endl;
@@ -43,7 +43,7 @@ void SourceReactor::assembling() {
         inputs(&rsp).
         outputs(&sch).
         function(
-                [&](multiport_input_t<int>& rsp, logical_action_t<int>& sch) {
+                [&](MultiportInput<int>& rsp, LogicalAction<int>& sch) {
                     for (int i = 0; i < parameters.n_ports.value; ++i) {
                         if (rsp[i].is_present()) {
                             cout << "(" << get_elapsed_logical_time() << ", " << get_microstep() << "), physical_time: " << get_elapsed_physical_time() << " " <<

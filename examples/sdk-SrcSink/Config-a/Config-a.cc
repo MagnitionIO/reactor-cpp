@@ -1,18 +1,18 @@
 #include "Config-a.hh"
 
-UserParameters system_parameters;
+UserParameters cfg_parameters;
 
-SystemParameter<int, uint32_t>::ParametersMap UserParameters::homogeneous_config() {
+ConfigParameter<int, uint32_t>::ParametersMap UserParameters::homogeneous_config() {
     return {
-            {"Main.Source.iterations", SystemParameterMetadata<int> { 0 } }
+            {"Main.Source.iterations", ConfigParameterMetadata<int> { 0 } }
     };
 }
 
-SystemParameter<int, uint32_t>::ParametersMap UserParameters::heterogeneous_config() {
+ConfigParameter<int, uint32_t>::ParametersMap UserParameters::heterogeneous_config() {
     return {
-            {"Main.Source.iterations", SystemParameterMetadata<int> { 20 } },
-            {"Main.Source.n_ports", SystemParameterMetadata<int> { 4 } },
-            {"Main.n_sinks", SystemParameterMetadata<int> { 4 } },
+            {"Main.Source.iterations", ConfigParameterMetadata<int> { 20 } },
+            {"Main.Source.n_ports", ConfigParameterMetadata<int> { 2 } },
+            {"Main.n_sinks", ConfigParameterMetadata<int> { 2 } },
 
     };
 }

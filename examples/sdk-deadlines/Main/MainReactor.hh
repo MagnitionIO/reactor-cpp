@@ -4,9 +4,11 @@
 
 #include "Node/NodeReactor.hh"
 
-class MainReactor: public MagnitionReactor {
+using namespace sdk;
+
+class MainReactor: public Reactor {
 public:
-    struct Parameters : public MagnitionParameter<int> {
+    struct Parameters : public SystemParameter<int> {
         ParameterMetadata<int> n_fast = ParameterMetadata<int> {
             .name = "n_fast",
             .description = "Number of fast nodes",
@@ -15,8 +17,8 @@ public:
             .value = 2
         };
 
-        Parameters(MagnitionReactor *container)
-            :   MagnitionParameter<int>(container) {
+        Parameters(Reactor *container)
+            :   SystemParameter<int>(container) {
             register_parameters (n_fast);
         }
     };
@@ -26,10 +28,10 @@ private:
     ReactorBank<NodeReactor> fast;
 
 public:
-    MainReactor(const std::string &name, MagnitionSimulator *env)
-    : MagnitionReactor(name, env) {}
-    MainReactor(const std::string &name, MagnitionReactor *container)
-    : MagnitionReactor(name, container) {}
+    MainReactor(const std::string &name, Environment *env)
+    : Reactor(name, env) {}
+    MainReactor(const std::string &name, Reactor *container)
+    : Reactor(name, container) {}
   
     void construction() override;
     void assembling() override;

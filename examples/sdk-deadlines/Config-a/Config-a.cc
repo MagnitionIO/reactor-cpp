@@ -1,20 +1,20 @@
 #include "Config-a.hh"
 
-UserParameters system_parameters;
+UserParameters cfg_parameters;
 
-SystemParameter<int, reactor::Duration>::ParametersMap UserParameters::homogeneous_config() {
+ConfigParameter<int, Duration>::ParametersMap UserParameters::homogeneous_config() {
     return {
-            {"Main.Source.iterations", SystemParameterMetadata<int> { 0 } }
+            {"Main.Source.iterations", ConfigParameterMetadata<int> { 0 } }
     };
 }
 
-SystemParameter<int, reactor::Duration>::ParametersMap UserParameters::heterogeneous_config() {
+ConfigParameter<int, Duration>::ParametersMap UserParameters::heterogeneous_config() {
     return {
-            {"Main.slow.period", SystemParameterMetadata<reactor::Duration> { 1s } },
-            {"Main.slow.duration", SystemParameterMetadata<reactor::Duration> { 5s } },
-            {"Main.n_fast", SystemParameterMetadata<int> { 3 } },
-            {"Main.fast_0.period", SystemParameterMetadata<reactor::Duration> { 500ms } },
-            {"Main.fast_0.duration", SystemParameterMetadata<reactor::Duration> { 10ms } }
+            {"Main.slow.period", ConfigParameterMetadata<Duration> { 1s } },
+            {"Main.slow.duration", ConfigParameterMetadata<Duration> { 5s } },
+            {"Main.n_fast", ConfigParameterMetadata<int> { 3 } },
+            {"Main.fast_0.period", ConfigParameterMetadata<Duration> { 500ms } },
+            {"Main.fast_0.duration", ConfigParameterMetadata<Duration> { 10ms } }
     };
 }
 
