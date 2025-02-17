@@ -1,5 +1,3 @@
-#pragma once
-
 #include "SinkReactor.hh"
 using namespace std;
     

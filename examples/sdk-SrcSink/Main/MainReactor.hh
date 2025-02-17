@@ -1,6 +1,6 @@
 #pragma once
 
-#include <reactor-sdk/magnition-reactor-cpp.hh>
+#include <reactor-sdk/reactor-sdk.hh>
 
 #include "Source/SourceReactor.hh"
 #include "Sink/SinkReactor.hh"

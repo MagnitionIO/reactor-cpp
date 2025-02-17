@@ -1,7 +1,7 @@
 #ifndef USER_PARAMETERS_H
 #define USER_PARAMETERS_H
 
-#include <reactor-sdk/magnition-reactor-cpp.hh>
+#include <reactor-sdk/reactor-sdk.hh>
 #include <map>
 #include <variant>
 #include <string>

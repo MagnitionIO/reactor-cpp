@@ -1,5 +1,5 @@
 
-#include <reactor-sdk/magnition-reactor-cpp.hh>
+#include <reactor-sdk/reactor-sdk.hh>
 
 #include "Config-a/Config-a.hh"
 #include "Main/MainReactor.hh"
