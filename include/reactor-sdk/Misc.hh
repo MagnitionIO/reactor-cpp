@@ -5,6 +5,8 @@
 namespace sdk
 {
 
+class Reactor;
+
 template<typename T>
 using LogicalAction = reactor::LogicalAction<T>;
 
@@ -59,5 +61,21 @@ auto bind_function(Object* obj, Func&& func) {
 
 #define pass_function(func) \
     bind_function(this, &std::decay_t<decltype(*this)>::func)
-    
+
+class Timer : public reactor::Timer {
+    std::string name;
+    Reactor *reactor;
+public:
+    Timer(const std::string& name, Reactor* container)
+        : reactor::Timer(name, (reactor::Reactor *) container), name (name), reactor (container){}
+
+    void set_timer (Duration period = Duration::zero(), Duration offset = Duration::zero()) {
+        period_ = period;
+        offset_ = offset;
+    }
+
+    Timer(Timer&&) noexcept = default;
+};
+
+
 } // namespace sdk

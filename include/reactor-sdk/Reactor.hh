@@ -72,6 +72,12 @@ struct trigger_value_type<reactor::ShutdownTrigger *>
     using type = reactor::ShutdownTrigger&;
 };
 
+template <>
+struct trigger_value_type<Timer *>
+{
+    using type = Timer&;
+};
+
 class Reactor : public reactor::Reactor
 {
 protected:
