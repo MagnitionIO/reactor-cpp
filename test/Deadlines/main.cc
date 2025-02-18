@@ -133,7 +133,7 @@ public:
 int main(int argc, char **argv) {
     unsigned workers = 1;
     bool fast{false};
-    reactor::Duration timeout = reactor::Duration::max();
+    reactor::Duration timeout = 4s;
 
     bool visualize = false;
 
