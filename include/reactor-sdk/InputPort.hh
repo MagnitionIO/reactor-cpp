@@ -6,7 +6,7 @@
 namespace sdk
 {
 
-template <class T>
+template <typename T>
 class Input : public reactor::Input<T> {
     class WiringProxy {
         public:
@@ -17,7 +17,11 @@ class Input : public reactor::Input<T> {
             }
 
             void operator>(MultiportInput<T>& input) {
-                origin.connect_multiport (input);
+                origin.connect (input);
+            }
+
+            void operator>>(MultiportInput<T>& input) {
+                origin.connect (input);
             }
 
         private:
@@ -25,7 +29,8 @@ class Input : public reactor::Input<T> {
     };
 
     void connect(Input<T>& input);
-    void connect_multiport(MultiportInput<T>& input);
+    void connect(MultiportInput<T>& input);
+    void connect_fanout(MultiportInput<T>& input);
 
 public:
     using value_type = T;

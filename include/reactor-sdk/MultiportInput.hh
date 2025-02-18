@@ -11,7 +11,7 @@ class Input;
 
 class Reactor;
 
-template<class T>
+template<typename T>
 class MultiportInput : public reactor::ModifableMultiport<Input<T>> {
     size_t n_inputs;
     std::string name;

@@ -2,6 +2,57 @@
 
 #include "reactor-cpp/port.hh"
 
+/*
+Input
+MultiportInput
+ReactorBank_Input
+ReactorBank_MultiportInput
+
+Output
+MultiportOutput
+ReactorBank_Output
+ReactorBank_MultiportOutput
+
+Input -> Input
+Input -> MultiportInput             *
+Input -> ReactorBank_Input          *
+Input -> ReactorBank_MultiportInput *
+
+Output -> Input
+Output -> MultiportInput             *
+Output -> ReactorBank_Input          *
+Output -> ReactorBank_MultiportInput *
+Output -> Output
+Output -> MultiportOutput
+
+MultiportInput -> Input
+MultiportInput -> MultiportInput
+MultiportInput -> ReactorBank_Input
+MultiportInput -> ReactorBank_MultiportInput
+
+MultiportOutput -> Input
+MultiportOutput -> MultiportInput
+MultiportOutput -> ReactorBank_Input
+MultiportOutput -> ReactorBank_MultiportInput
+MultiportOutput -> Output
+MultiportOutput -> MultiportOutput
+
+ReactorBank_Output -> Input
+ReactorBank_Output -> MultiportInput
+ReactorBank_Output -> ReactorBank_Input
+ReactorBank_Output -> ReactorBank_MultiportInput
+ReactorBank_Output -> Output
+ReactorBank_Output -> MultiportOutput
+
+ReactorBank_MultiportOutput -> Input
+ReactorBank_MultiportOutput -> MultiportInput
+ReactorBank_MultiportOutput -> ReactorBank_Input
+ReactorBank_MultiportOutput -> ReactorBank_MultiportInput
+ReactorBank_MultiportOutput -> Output
+ReactorBank_MultiportOutput -> MultiportOutput
+
+*/
+
 template <typename T>
 void connect_(  std::set<reactor::Port<T>*> &left_ports, std::set<reactor::Port<T>*> &right_ports,
                 reactor::ConnectionProperties &&property) {

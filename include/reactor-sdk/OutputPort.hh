@@ -11,15 +11,15 @@ class Input;
 template<typename T>
 class Output;
 
-template<class T>
+template<typename T>
 class MultiportOutput;
 
-template<class T>
+template<typename T>
 class MultiportInput;
 
 class Reactor;
 
-template <class T>
+template <typename T>
 class Output : public reactor::Output<T> {
     std::set<Output<T>*> accumulated;
     bool is_accumulated = false;

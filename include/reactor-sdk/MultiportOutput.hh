@@ -12,15 +12,15 @@ class Input;
 template<typename T>
 class Output;
 
-template<class T>
+template<typename T>
 class MultiportOutput;
 
-template<class T>
+template<typename T>
 class MultiportInput;
 
 class Reactor;
 
-template<class T>
+template<typename T>
 class MultiportOutput : public reactor::ModifableMultiport<Output<T>> {
     size_t n_inputs;
     std::string name;

@@ -21,10 +21,10 @@ class Input;
 template<typename T>
 class Output;
 
-template<class T>
+template<typename T>
 class MultiportOutput;
 
-template<class T>
+template<typename T>
 class MultiportInput;
 
 template <typename T>
