@@ -10,14 +10,14 @@ void SinkReactor::assembling() {
     cout << "Assembling Sink\n";
 
     reaction("startup_reaction").
-        inputs(&startup).
-        outputs().
+        triggers(&startup).
+        effects().
         function(pass_function(startup_reaction)
     );
 
     reaction("process_request").
-        inputs(&req).
-        outputs(&rsp).
+        triggers(&req).
+        effects(&rsp).
         function(pass_function(process_request)
     );
 }

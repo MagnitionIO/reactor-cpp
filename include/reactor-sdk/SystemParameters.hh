@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cxxabi.h>
 #include "SystemParameterBase.hh"
 #include "Environment.hh"
@@ -22,17 +23,17 @@ public:
     using ParameterValue = std::variant<ParameterMetadata<ParameterValueType>*...>;
 
     SystemParameter(Reactor *owner)
-    : reactor(owner), sim(owner->sim) {
+    : reactor(owner), env(owner->get_env()) {
         reactor->set_param (this);
     }
 
     void fetch_config() override {
         // cout << "Fetch config of Reactor:" << reactor->fqn() << endl;
-        if (sim->config_parameters) {
+        if (env->get_config_params()) {
             for (auto& entry : param_map) {
                 // std::cout << "Fetching Parameter: " << entry.first << "\n";
                 std::visit([&](auto* paramMetadataPtr) {
-                    sim->config_parameters->PullConfigParameter(entry.first, paramMetadataPtr);
+                    env->get_config_params()->PullConfigParameter(entry.first, paramMetadataPtr);
                 }, entry.second);
             }
         }
@@ -66,95 +67,10 @@ public:
         register_parameters_(reactor->fqn(), args...);
     }
 
-    // std::string to_json() const override {
-    //     std::ostringstream oss;
-    //     bool first = true;
-    //     for (const auto& [key, meta] : param_map) {
-    //         if (!first) oss << ",\n";
-    //         first = false;
-
-    //         oss << "  \"" << key << "\": {\n";
-    //         oss << "    \"description\": \"" << meta.description << "\",\n";
-    //         oss << "    \"value\": ";
-    //         std::visit([&oss](auto&& val) {
-    //             using T = std::decay_t<decltype(val)>;
-    //             if constexpr (std::is_same_v<T, std::string>) {
-    //                 oss << "\"" << val << "\"";
-    //             } else {
-    //                 oss << val;
-    //             }
-    //         }, meta.getter());
-
-    //         oss << ",\n    \"min\": ";
-    //         std::visit([&oss](auto&& val) {
-    //             using T = std::decay_t<decltype(val)>;
-    //             if constexpr (std::is_same_v<T, std::string>) {
-    //                 oss << "\"" << val << "\"";
-    //             } else {
-    //                 oss << val;
-    //             }
-    //         }, meta.min_value);
-
-    //         oss << ",\n    \"max\": ";
-    //         std::visit([&oss](auto&& val) {
-    //             using T = std::decay_t<decltype(val)>;
-    //             if constexpr (std::is_same_v<T, std::string>) {
-    //                 oss << "\"" << val << "\"";
-    //             } else {
-    //                 oss << val;
-    //             }
-    //         }, meta.max_value);
-
-    //         oss << "\n  }";
-    //     }
-    //     return oss.str();
-    // }
-
-    // std::string to_yaml(std::string &&prefix) const override {
-    //     std::ostringstream oss;
-    //     for (const auto& [key, meta] : param_map) {
-    //         oss << prefix << key << ":\n"; // YAML key
-    //         oss << prefix << "  description: \"" << meta.description << "\"\n";
-    //         oss << prefix << "  value: ";
-    //         std::visit([&oss](auto&& val) {
-    //             using T = std::decay_t<decltype(val)>;
-    //             if constexpr (std::is_same_v<T, std::string>) {
-    //                 oss << "\"" << val << "\"";
-    //             } else {
-    //                 oss << val;
-    //             }
-    //         }, meta.getter());
-    //         oss << "\n";
-
-    //         oss << prefix << "  min: ";
-    //         std::visit([&oss](auto&& val) {
-    //             using T = std::decay_t<decltype(val)>;
-    //             if constexpr (std::is_same_v<T, std::string>) {
-    //                 oss << "\"" << val << "\"";
-    //             } else {
-    //                 oss << val;
-    //             }
-    //         }, meta.min_value);
-    //         oss << "\n";
-
-    //         oss << prefix << "  max: ";
-    //         std::visit([&oss](auto&& val) {
-    //             using T = std::decay_t<decltype(val)>;
-    //             if constexpr (std::is_same_v<T, std::string>) {
-    //                 oss << "\"" << val << "\"";
-    //             } else {
-    //                 oss << val;
-    //             }
-    //         }, meta.max_value);
-    //         oss << "\n";
-    //     }
-    //     return oss.str();
-    // }
-
 private:
     std::map<std::string, ParameterValue> param_map;
     Reactor *reactor;
-    Environment *sim;
+    Environment *env;
 
     template <typename T>
     void register_parameter(const std::string& name, ParameterMetadata<T>& param) {
@@ -169,9 +85,6 @@ private:
             register_parameters_(base_name, args...);
         }
     }
-
-    friend class Reactor;
-    friend class Environment;
 };
 
 } // namespace sdk

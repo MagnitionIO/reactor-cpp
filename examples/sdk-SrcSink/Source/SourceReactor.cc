@@ -13,8 +13,8 @@ void SourceReactor::construction() {
 void SourceReactor::assembling() {
     cout << "Assembling Source n_ports:" << parameters.n_ports.value << "\n";
     reaction("reaction_1").
-        inputs(&startup).
-        outputs(&sch).
+        triggers(&startup).
+        effects(&sch).
         function(
             [&](Startup& startup, LogicalAction<int>& sched) {
                 cout << "(" << get_elapsed_logical_time() << ", " << get_microstep() << "), physical_time: " << get_elapsed_physical_time() << " " <<
@@ -27,8 +27,8 @@ void SourceReactor::assembling() {
         );
 
     reaction("reaction_2").
-        inputs(&sch).
-        outputs(&req).
+        triggers(&sch).
+        effects(&req).
         function(
             [&](LogicalAction<int>& sch, MultiportOutput<int>& req) {
                 for (int i = 0; i < parameters.n_ports.value; ++i) {
@@ -40,8 +40,8 @@ void SourceReactor::assembling() {
         );
 
     reaction("reaction_3").
-        inputs(&rsp).
-        outputs(&sch).
+        triggers(&rsp).
+        effects(&sch).
         function(
                 [&](MultiportInput<int>& rsp, LogicalAction<int>& sch) {
                     for (int i = 0; i < parameters.n_ports.value; ++i) {

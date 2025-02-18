@@ -6,7 +6,7 @@ void MainReactor::construction() {
 
     src = std::make_unique<SourceReactor>("Source", this);
 
-    for (size_t __lf_idx = 0; __lf_idx < parameters.n_sinks.value; __lf_idx++) {
+    for (int __lf_idx = 0; __lf_idx < parameters.n_sinks.value; __lf_idx++) {
         std::string __lf_inst_name = "Sink_" + std::to_string(__lf_idx);
         snk.emplace_back(std::make_unique<SinkReactor>(__lf_inst_name, this));
     }
@@ -19,8 +19,8 @@ void MainReactor::assembling() {
     (snk->*(select_default(snk).rsp)) --> src->rsp;
 
     reaction("reaction_1").
-        inputs(&startup).
-        outputs().
+        triggers(&startup).
+        effects().
         function(
             [&](Startup& startup) {
                 cout << "(" << get_elapsed_logical_time() << ", " << get_microstep() << "), physical_time: " << get_elapsed_physical_time() << " " <<

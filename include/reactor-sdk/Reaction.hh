@@ -73,7 +73,7 @@ public:
     }
 
     template <typename... Outputs>
-    ReactionOutput<InputTuple, std::tuple<Outputs...>> &outputs(Outputs&&... outputs)
+    ReactionOutput<InputTuple, std::tuple<Outputs...>> &effects(Outputs&&... outputs)
     {
         auto output_tuple = std::make_tuple(outputs...);
         auto ReactionOutputRef = std::make_shared<ReactionOutput<InputTuple, std::tuple<Outputs...>>> (name, reactor, std::move(input_triggers), std::move(output_tuple));
