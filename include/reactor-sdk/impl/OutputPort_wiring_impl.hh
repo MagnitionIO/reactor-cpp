@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Connection.hh"
+
 namespace sdk
 {
 

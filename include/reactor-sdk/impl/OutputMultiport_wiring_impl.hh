@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Connection.hh"
 namespace sdk
 {
 template <typename T>
@@ -119,26 +120,44 @@ void MultiportOutput<T>::connect(ReactorBankInputPort<OtherReactorType, T> &&oth
 template <typename T>
 template <typename OtherReactorType>
 void MultiportOutput<T>::connect(ReactorBankInputPortOffset<OtherReactorType, T> &&other_bank_ports) {
-    auto reactor_itr = other_bank_ports.begin();
+    // auto reactor_itr = other_bank_ports.begin();
 
-    if (n_inputs < other_bank_ports.size()) {
-        reactor::log::Warn() << "There are more right ports than left ports. "
-                            << "Not all ports will be connected!";
-    } else if (n_inputs > other_bank_ports.size()) {
-        reactor::log::Warn() << "There are more left ports than right ports. "
-                            << "Not all ports will be connected!";
+    // if (n_inputs < other_bank_ports.size()) {
+    //     reactor::log::Warn() << "There are more right ports than left ports. "
+    //                         << "Not all ports will be connected!";
+    // } else if (n_inputs > other_bank_ports.size()) {
+    //     reactor::log::Warn() << "There are more left ports than right ports. "
+    //                         << "Not all ports will be connected!";
+    // }
+    // for (auto& output_port : *this) {
+    //     auto *reactor = (*reactor_itr).get();
+    //     char* reactor_base = reinterpret_cast<char*>(reactor);
+    //     Input<T>* port = reinterpret_cast<Input<T>*>(reactor_base + other_bank_ports.get_offset());
+    //     output_port.environment()->draw_connection(output_port, *port, reactor::ConnectionProperties{});
+    //     ++reactor_itr;
+    //     if (reactor_itr == other_bank_ports.end())
+    //     {
+    //         break;
+    //     }
+    // }
+
+    std::set<reactor::Port<T>*> left_ports;
+    std::set<reactor::Port<T>*> right_ports;
+    bool result;
+
+    for (auto& left_port : *this) {
+        result = left_ports.insert(&left_port).second;
+        reactor_assert(result);
     }
-    for (auto& output_port : *this) {
-        auto *reactor = (*reactor_itr).get();
-        char* reactor_base = reinterpret_cast<char*>(reactor);
+
+    for (auto &reactor : other_bank_ports) {
+        char* reactor_base = reinterpret_cast<char*>(reactor.get());
         Input<T>* port = reinterpret_cast<Input<T>*>(reactor_base + other_bank_ports.get_offset());
-        output_port.environment()->draw_connection(output_port, *port, reactor::ConnectionProperties{});
-        ++reactor_itr;
-        if (reactor_itr == other_bank_ports.end())
-        {
-            break;
-        }
+        result = right_ports.insert(port).second;
+        reactor_assert(result);
     }
+
+    connect_ (left_ports, right_ports, reactor::ConnectionProperties{});
 }
     
 } // namespace sdk
