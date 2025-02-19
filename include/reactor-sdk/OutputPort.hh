@@ -37,23 +37,27 @@ class Output : public reactor::Output<T> {
             }
 
             void operator>(MultiportInput<T>& input) {
-                origin.connect_multiport (input);
+                origin.connect (input);
+            }
+
+            void operator>>(MultiportInput<T>& input) {
+                origin.connect_fanout (input);
             }
 
             template <typename ReactorType>
             void operator>(std::pair<std::vector<std::unique_ptr<ReactorType>>*, Input<T> ReactorType::*> connections)
             {
-                origin.connect_multiport (connections.first, connections.second);
+                origin.connect (connections.first, connections.second);
             }
 
             template <typename OtherReactorType>
             void operator>(ReactorBankInputPort<OtherReactorType, T> &&other_bank_ports) {
-                origin.connect_multiport(std::move(other_bank_ports));
+                origin.connect(std::move(other_bank_ports));
             }
 
             template <typename OtherReactorType>
             void operator>(ReactorBankInputPortOffset<OtherReactorType, T> &&other_bank_ports) {
-                origin.connect_multiport(std::move(other_bank_ports));
+                origin.connect(std::move(other_bank_ports));
             }
 
         private:
@@ -62,16 +66,17 @@ class Output : public reactor::Output<T> {
 
     void connect(Input<T>& input);
     void connect(Output<T>& input);
-    void connect_multiport(MultiportInput<T>& input);
+    void connect(MultiportInput<T>& input);
+    void connect_fanout(MultiportInput<T>& input);
 
     template <typename ReactorType>
-    void connect_multiport(std::vector<std::unique_ptr<ReactorType>>* reactors, Input<T> ReactorType::*member);
+    void connect(std::vector<std::unique_ptr<ReactorType>>* reactors, Input<T> ReactorType::*member);
 
     template <typename ReactorType>
-    void connect_multiport(ReactorBankInputPort<ReactorType, T> &&other_bank_ports);
+    void connect(ReactorBankInputPort<ReactorType, T> &&other_bank_ports);
 
     template <typename ReactorType>
-    void connect_multiport(ReactorBankInputPortOffset<ReactorType, T> &&other_bank_ports);
+    void connect(ReactorBankInputPortOffset<ReactorType, T> &&other_bank_ports);
 
 public:
     using value_type = T;

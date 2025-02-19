@@ -21,7 +21,7 @@ class Input : public reactor::Input<T> {
             }
 
             void operator>>(MultiportInput<T>& input) {
-                origin.connect (input);
+                origin.connect_fanout (input);
             }
 
         private:
