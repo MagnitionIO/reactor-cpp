@@ -94,15 +94,8 @@ private:
     int priority = 1;
     std::set<Reactor*> child_reactors;
 
-    void add_child(Reactor* reactor) {
-        [[maybe_unused]] bool result = child_reactors.insert(reactor).second;
-        reactor_assert(result);
-    }
-
-    void add_to_reaction_map (std::string &name, std::shared_ptr<BaseTrigger> reaction) {
-        reaction_map[name] = reaction;
-    }
-
+    void add_child(Reactor* reactor);
+    void add_to_reaction_map (std::string &name, std::shared_ptr<BaseTrigger> reaction);
     int get_priority() { return priority++;}
 
     template <typename Fn, typename... InputTriggers, typename... OutputTriggers>
@@ -122,28 +115,15 @@ private:
 public:
     size_t bank_index = 0;
 
-    Reactor(const std::string &name, Environment *env)
-        : reactor::Reactor(name, (reactor::Environment*)env), env(env) {
-        // reactor::validate(p_param,
-        //             "Reactor:" + name + " has passed null parameter");
-    }
+    Reactor(const std::string &name, Environment *env);
 
-    Reactor(const std::string &name, Reactor *container)
-        : reactor::Reactor(name, container), env(container->env) {
-        container->add_child (this);
-        // reactor::validate(p_param,
-        //     "Reactor:" + name + " has passed null parameter");
-    }
+    Reactor(const std::string &name, Reactor *container);
 
     void set_param (SystemParameterBase *param) { p_param = param; }
 
     Environment *get_env() { return env; }
 
-    Reactor &reaction (const std::string name)
-    {
-        current_reaction_name = name;
-        return *this;
-    }
+    Reactor &reaction (const std::string name);
 
     template <typename... Inputs>
     ReactionInput<std::tuple<Inputs...>> &operator()(Inputs&&... inputs)
@@ -176,15 +156,8 @@ public:
     void request_stop() { environment()->sync_shutdown(); }
     virtual void construction() = 0;
     virtual void assembling() = 0;
-    void construct() override {
-        if (p_param) {
-            p_param->fetch_config();
-        }
-        construction();
-    }
-    void assemble() override {
-        assembling();
-    }
+    void construct() override;
+    void assemble() override;
 
     template <typename Fn, typename InputTuple, typename OutputTuple>
     friend class Reaction;

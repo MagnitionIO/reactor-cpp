@@ -6,7 +6,7 @@ find_package(reactor-cpp PATHS )
 
 set(REACTOR_CPP_SDK_INCLUDE "include")
 
-add_library(${ReactorSDK_LIB} SHARED Environment.cc)
+add_library(${ReactorSDK_LIB} SHARED Environment.cc Reactor.cc)
 
 target_link_libraries(${ReactorSDK_LIB} PUBLIC reactor-cpp)
 
