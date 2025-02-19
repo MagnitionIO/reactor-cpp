@@ -27,6 +27,8 @@ class MultiportOutput;
 template<typename T>
 class MultiportInput;
 
+class Timer;
+
 template <typename T>
 struct trigger_value_type;
 
